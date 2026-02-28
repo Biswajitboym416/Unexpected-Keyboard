@@ -252,6 +252,8 @@ public class Keyboard2 extends InputMethodService
     _keyeventhandler.started(_config);
     setInputView(_keyboard_container_view);
     Logs.debug_startup_input_view(info, _config);
+
+    refresh_clipboard_image();
   }
 
   @Override
