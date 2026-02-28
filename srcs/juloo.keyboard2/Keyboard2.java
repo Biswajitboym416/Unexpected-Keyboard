@@ -221,6 +221,8 @@ public class Keyboard2 extends InputMethodService
       create_keyboard_view();
       _emojiPane = null;
       _clipboard_pane = null;
+      _clipboard_image_scroll = null;
+      _clipboard_image_row = null;
       setInputView(_keyboard_container_view);
     }
     // Set keyboard background opacity
