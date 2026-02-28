@@ -159,6 +159,9 @@ public class Keyboard2 extends InputMethodService
     _keyboard_container_view = (ViewGroup)inflate_view(R.layout.keyboard);
     _keyboard_layout_view = (Keyboard2View)_keyboard_container_view.findViewById(R.id.keyboard_view);
     _candidates_view = (CandidatesView)_keyboard_container_view.findViewById(R.id.candidates_view);
+
+    _clipboard_image_scroll = (HorizontalScrollView)_keyboard_container_view.findViewById(R.id.clipboard_image_scroll);
+    _clipboard_image_row = (LinearLayout)_keyboard_container_view.findViewById(R.id.clipboard_image_row);
   }
 
   InputMethodManager get_imm()
@@ -512,6 +515,72 @@ public class Keyboard2 extends InputMethodService
     return getWindow().getWindow().getAttributes().token;
   }
 
+  private void refresh_clipboard_image()
+{
+  ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+  _clipboard_image_row.removeAllViews();
+  if (clipboard == null || !clipboard.hasPrimaryClip())
+  {
+    _clipboard_image_scroll.setVisibility(View.GONE);
+    return;
+  }
+  ClipData clip = clipboard.getPrimaryClip();
+  if (clip == null || clip.getItemCount() == 0)
+  {
+    _clipboard_image_scroll.setVisibility(View.GONE);
+    return;
+  }
+  ClipData.Item item = clip.getItemAt(0);
+  Uri uri = item.getUri();
+  if (uri == null)
+  {
+    _clipboard_image_scroll.setVisibility(View.GONE);
+    return;
+  }
+  try
+  {
+    Bitmap bitmap;
+    if (android.os.Build.VERSION.SDK_INT >= 28)
+    {
+      ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), uri);
+      bitmap = ImageDecoder.decodeBitmap(source);
+    }
+    else
+    {
+      bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+    }
+    ImageView imageView = new ImageView(this);
+    int size = (int)(56 * getResources().getDisplayMetrics().density);
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
+    params.setMargins(4, 4, 4, 4);
+    imageView.setLayoutParams(params);
+    imageView.setImageBitmap(bitmap);
+    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+    imageView.setOnClickListener(v ->
+    {
+      InputConnection conn = getCurrentInputConnection();
+      if (conn != null)
+      {
+        androidx.core.view.inputmethod.InputConnectionCompat.commitContent(
+          conn,
+          getCurrentInputEditorInfo(),
+          new androidx.core.view.inputmethod.InputContentInfoCompat(
+            uri,
+            new android.content.ClipDescription("image", new String[]{ clip.getDescription().getMimeType(0) }),
+            null),
+          androidx.core.view.inputmethod.InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION,
+          null);
+      }
+    });
+    _clipboard_image_row.addView(imageView);
+    _clipboard_image_scroll.setVisibility(View.VISIBLE);
+  }
+  catch (Exception e)
+  {
+    _clipboard_image_scroll.setVisibility(View.GONE);
+  }
+}
+  
   private View inflate_view(int layout)
   {
     return View.inflate(new ContextThemeWrapper(this, _config.theme), layout, null);
