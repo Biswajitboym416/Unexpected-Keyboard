@@ -17,6 +17,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +55,10 @@ public class Keyboard2 extends InputMethodService
   private Dictionaries _dictionaries;
   private ViewGroup _emojiPane = null;
   private ViewGroup _clipboard_pane = null;
+
+  private HorizontalScrollView _clipboard_image_scroll = null;
+  private LinearLayout _clipboard_image_row = null;
+  
   private Handler _handler;
 
   private Config _config;
