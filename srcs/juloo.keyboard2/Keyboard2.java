@@ -563,21 +563,23 @@ public class Keyboard2 extends InputMethodService
     imageView.setImageBitmap(bitmap);
     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
     imageView.setOnClickListener(v ->
-    {
-      InputConnection conn = getCurrentInputConnection();
-      if (conn != null)
-      {
-        androidx.core.view.inputmethod.InputConnectionCompat.commitContent(
-          conn,
-          getCurrentInputEditorInfo(),
-          new androidx.core.view.inputmethod.InputContentInfoCompat(
-            uri,
-            new android.content.ClipDescription("image", new String[]{ clip.getDescription().getMimeType(0) }),
-            null),
-          androidx.core.view.inputmethod.InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION,
-          null);
-      }
-    });
+{
+  InputConnection conn = getCurrentInputConnection();
+  if (conn != null)
+  {
+    androidx.core.view.inputmethod.InputConnectionCompat.commitContent(
+      conn,
+      getCurrentInputEditorInfo(),
+      new androidx.core.view.inputmethod.InputContentInfoCompat(
+        uri,
+        new android.content.ClipDescription("image", new String[]{ clip.getDescription().getMimeType(0) }),
+        null),
+      androidx.core.view.inputmethod.InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION,
+      null);
+    _clipboard_image_row.removeAllViews();
+    _clipboard_image_scroll.setVisibility(View.GONE);
+  }
+});
     _clipboard_image_row.addView(imageView);
     _clipboard_image_scroll.setVisibility(View.VISIBLE);
   }
