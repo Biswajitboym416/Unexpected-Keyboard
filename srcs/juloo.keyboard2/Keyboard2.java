@@ -522,6 +522,14 @@ public class Keyboard2 extends InputMethodService
   private void refresh_clipboard_image()
 {
   ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+  EditorInfo editorInfo = getCurrentInputEditorInfo();
+  if (editorInfo == null ||
+    !androidx.core.view.inputmethod.InputConnectionCompat.isCommitContentSupported(
+        editorInfo, "image/*"))
+  {
+  _clipboard_image_scroll.setVisibility(View.GONE);
+  return;
+  }
   _clipboard_image_row.removeAllViews();
   if (clipboard == null || !clipboard.hasPrimaryClip())
   {
