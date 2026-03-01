@@ -547,7 +547,9 @@ public class Keyboard2 extends InputMethodService
     if (android.os.Build.VERSION.SDK_INT >= 28)
     {
       ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), uri);
-      bitmap = ImageDecoder.decodeBitmap(source);
+      bitmap = ImageDecoder.decodeBitmap(source, (decoder, info, src) -> {
+          decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE);
+      });
     }
     else
     {
