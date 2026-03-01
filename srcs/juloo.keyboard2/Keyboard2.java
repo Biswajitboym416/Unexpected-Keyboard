@@ -575,7 +575,7 @@ public class Keyboard2 extends InputMethodService
   InputConnection conn = getCurrentInputConnection();
   if (conn != null)
   {
-    androidx.core.view.inputmethod.InputConnectionCompat.commitContent(
+    boolean success = androidx.core.view.inputmethod.InputConnectionCompat.commitContent(
       conn,
       getCurrentInputEditorInfo(),
       new androidx.core.view.inputmethod.InputContentInfoCompat(
@@ -584,8 +584,11 @@ public class Keyboard2 extends InputMethodService
         null),
       androidx.core.view.inputmethod.InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION,
       null);
-    _clipboard_image_row.removeAllViews();
-    _clipboard_image_scroll.setVisibility(View.GONE);
+    if (success)
+    {
+      _clipboard_image_row.removeAllViews();
+      _clipboard_image_scroll.setVisibility(View.GONE);
+    }
   }
 });
     _clipboard_image_row.addView(imageView);
